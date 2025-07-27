@@ -47,7 +47,11 @@ export default defineConfig(({ mode }) => ({
           }
           return `assets/[name]-[hash][extname]`;
         },
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js'
       },
     },
+    assetsDir: 'assets',
+    sourcemap: false
   },
 }));
