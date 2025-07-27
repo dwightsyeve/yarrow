@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "dev:app": "concurrently \"npm run server\" \"npm run dev\" --names \"SERVER,FRONTEND\" --prefix-colors \"yellow,cyan\"",
-    "build": "vite build",
+    "build": "tsc && vite build",
+    "vercel-build": "npm run build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",

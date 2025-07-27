@@ -39,6 +39,7 @@ const ApplicationForm = () => {
     setIsSubmitting(true);
 
     try {
+      // Use relative path for API calls - works in both dev and production
       const response = await fetch('/api/submit-form', {
         method: 'POST',
         headers: {
