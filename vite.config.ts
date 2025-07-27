@@ -7,7 +7,7 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
-    port: 8080,
+    port: 8081,
     headers: {
       'Cache-Control': 'public, max-age=31536000', // 1 year for assets
     },
