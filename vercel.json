@@ -7,16 +7,22 @@
       "config": {
         "distDir": "dist"
       }
+    },
+    {
+      "src": "api/submit-form.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 10
+      }
+    },
+    {
+      "src": "api/health.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 5
+      }
     }
   ],
-  "functions": {
-    "api/submit-form.js": {
-      "maxDuration": 10
-    },
-    "api/health.js": {
-      "maxDuration": 5
-    }
-  },
   "routes": [
     {
       "src": "/api/(.*)",
