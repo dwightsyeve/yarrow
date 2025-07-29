@@ -1,22 +1,22 @@
-# Welcome to your Lovable project
+# Welcome to your yarrow project
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/945f5193-0d0f-4989-92f8-a4248188bc14
+**URL**: https://yarrow.dev/projects/945f5193-0d0f-4989-92f8-a4248188bc14
 
 ## How can I edit this code?
 
 There are several ways of editing your application.
 
-**Use Lovable**
+**Use yarrow**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/945f5193-0d0f-4989-92f8-a4248188bc14) and start prompting.
+Simply visit the [yarrow Project](https://yarrow.dev/projects/945f5193-0d0f-4989-92f8-a4248188bc14) and start prompting.
 
-Changes made via Lovable will be committed automatically to this repo.
+Changes made via yarrow will be committed automatically to this repo.
 
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in yarrow.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -62,12 +62,12 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/945f5193-0d0f-4989-92f8-a4248188bc14) and click on Share -> Publish.
+Simply open [yarrow](https://yarrow.dev/projects/945f5193-0d0f-4989-92f8-a4248188bc14) and click on Share -> Publish.
 
-## Can I connect a custom domain to my Lovable project?
+## Can I connect a custom domain to my yarrow project?
 
 Yes, you can!
 
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Read more here: [Setting up a custom domain](https://docs.yarrow.dev/tips-tricks/custom-domain#step-by-step-guide)
