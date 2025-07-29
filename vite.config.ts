@@ -11,13 +11,7 @@ export default defineConfig(({ mode }) => ({
     headers: {
       'Cache-Control': 'public, max-age=31536000', // 1 year for assets
     },
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-        secure: false,
-      }
-    }
+    // No proxy needed for Supabase Edge Functions
   },
   plugins: [
     react(),

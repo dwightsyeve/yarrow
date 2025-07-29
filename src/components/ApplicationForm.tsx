@@ -39,11 +39,12 @@ const ApplicationForm = () => {
     setIsSubmitting(true);
 
     try {
-      // Use relative path for API calls - works in both dev and production
-      const response = await fetch('/api/submit-form', {
+      // Use Supabase Edge Function
+      const response = await fetch('https://bccyzexrlqorhvwoenjm.supabase.co/functions/v1/submit-form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
         },
         body: JSON.stringify(formData),
       });
