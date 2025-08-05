@@ -44,11 +44,11 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3 text-sm">
                 <Phone className="w-4 h-4 text-primary" />
-                <span>1-800-YARROW-1</span>
+                <span>3364917636</span>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Mail className="w-4 h-4 text-primary" />
-                <span>hello@yarrowfinancial.com</span>
+                <span>yarrowfinancial@gmail.com</span>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <MapPin className="w-4 h-4 text-primary" />
