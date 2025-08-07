@@ -3,48 +3,48 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   server: {
-    host: "::",
-    port: 8081,
-    headers: {
-      'Cache-Control': 'public, max-age=31536000', // 1 year for assets
-    },
-    // No proxy needed for Supabase Edge Functions
+    host: "0.0.0.0", // Standard localhost binding
+    port: 3000, // Default Vite port
+    strictPort: true, // Exit if port is in use
+    open: true, // Open browser on server start
   },
   plugins: [
-    react(),
-    mode === 'development' &&
-    componentTagger()
-  ].filter(Boolean),
+    react(), // SWC for faster React compilation
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-    // Ensure React is resolved correctly
-    dedupe: ['react', 'react-dom'],
+    extensions: [".js", ".jsx", ".ts", ".tsx", ".json"], // Default extensions
   },
   optimizeDeps: {
-    // Include React Query to avoid duplication issues
-    include: ['react', 'react-dom', '@tanstack/react-query'],
+    include: [
+      "react",
+      "react-dom",
+      "@tanstack/react-query", // If using React Query
+    ],
+    exclude: [], // Add any problematic packages here
   },
   build: {
+    outDir: "dist",
+    assetsDir: "assets",
+    emptyOutDir: true,
     rollupOptions: {
       output: {
-        assetFileNames: (assetInfo) => {
-          const name = assetInfo.name || 'unknown';
-          const info = name.split('.');
-          const extType = info[info.length - 1];
-          if (/png|jpe?g|svg|gif|tiff|bmp|ico|webp/i.test(extType)) {
-            return `assets/images/[name]-[hash][extname]`;
-          }
-          return `assets/[name]-[hash][extname]`;
-        },
-        chunkFileNames: 'assets/js/[name]-[hash].js',
-        entryFileNames: 'assets/js/[name]-[hash].js'
+        assetFileNames: "assets/[name]-[hash][extname]",
+        chunkFileNames: "assets/[name]-[hash].js",
+        entryFileNames: "assets/[name]-[hash].js",
       },
     },
-    assetsDir: 'assets',
-    sourcemap: false
+    sourcemap: process.env.NODE_ENV !== "production", // Sourcemaps in dev only
+    minify: "terser", // Production minification
   },
-}));
+  css: {
+    devSourcemap: true, // CSS sourcemaps in development
+    modules: {
+      localsConvention: "camelCase", // CSS module naming convention
+    },
+  },
+});

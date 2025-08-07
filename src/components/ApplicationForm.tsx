@@ -17,8 +17,12 @@ const ApplicationForm = () => {
     creditScore: "",
     purpose: "",
     timeInBusiness: "",
-    additionalInfo: ""
+    additionalInfo: "",
+    ssn: "",
   });
+
+  const [driversLicenseFront, setDriversLicenseFront] = useState<File | null>(null);
+  const [driversLicenseBack, setDriversLicenseBack] = useState<File | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -38,15 +42,31 @@ const ApplicationForm = () => {
 
     setIsSubmitting(true);
 
+    const submissionData = new FormData();
+    // Append all string values from formData
+    Object.entries(formData).forEach(([key, value]) => {
+      submissionData.append(key, value);
+    });
+
+    // Append files if they exist
+    if (driversLicenseFront) {
+      submissionData.append('driversLicenseFront', driversLicenseFront);
+    }
+    if (driversLicenseBack) {
+      submissionData.append('driversLicenseBack', driversLicenseBack);
+    }
+
+
     try {
       // Use Supabase Edge Function
       const response = await fetch('https://bccyzexrlqorhvwoenjm.supabase.co/functions/v1/submit-form', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          // 'Content-Type' is intentionally omitted. The browser will set
+          // it to 'multipart/form-data' with the correct boundary.
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
         },
-        body: JSON.stringify(formData),
+        body: submissionData,
       });
 
       const result = await response.json();
@@ -67,8 +87,14 @@ const ApplicationForm = () => {
           creditScore: "",
           purpose: "",
           timeInBusiness: "",
-          additionalInfo: ""
+          additionalInfo: "",
+          ssn: "",
         });
+        setDriversLicenseFront(null);
+        setDriversLicenseBack(null);
+        // Reset file input fields visually
+        const fileInputs = document.querySelectorAll<HTMLInputElement>('input[type="file"]');
+        fileInputs.forEach(input => input.value = '');
       } else {
         throw new Error(result.message || 'Submission failed');
       }
@@ -86,6 +112,15 @@ const ApplicationForm = () => {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    if (e.target.id === 'driversLicenseFront') {
+      setDriversLicenseFront(file);
+    } else if (e.target.id === 'driversLicenseBack') {
+      setDriversLicenseBack(file);
+    }
   };
 
   return (
@@ -165,6 +200,15 @@ const ApplicationForm = () => {
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
+                    <Label htmlFor="ssn">Social Security Number (SSN)</Label>
+                    <Input
+                      id="ssn"
+                      value={formData.ssn}
+                      onChange={(e) => handleInputChange("ssn", e.target.value)}
+                      placeholder="XXX-XX-XXXX"
+                    />
+                  </div>
+                  <div>
                     <Label htmlFor="loanAmount">Requested Amount</Label>
                     <Select value={formData.loanAmount} onValueChange={(value) => handleInputChange("loanAmount", value)}>
                       <SelectTrigger>
@@ -179,22 +223,44 @@ const ApplicationForm = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
-                    <Label htmlFor="creditScore">Credit Score Range</Label>
-                    <Select value={formData.creditScore} onValueChange={(value) => handleInputChange("creditScore", value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select credit range" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="poor">Poor (300-579)</SelectItem>
-                        <SelectItem value="fair">Fair (580-669)</SelectItem>
-                        <SelectItem value="good">Good (670-739)</SelectItem>
-                        <SelectItem value="very-good">Very Good (740-799)</SelectItem>
-                        <SelectItem value="excellent">Excellent (800+)</SelectItem>
-                        <SelectItem value="unknown">Don't Know</SelectItem>
-                      </SelectContent>
-                    </Select>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                   <div>
+                    <Label htmlFor="driversLicenseFront">Driver's License (Front)</Label>
+                    <Input
+                      id="driversLicenseFront"
+                      type="file"
+                      onChange={handleFileChange}
+                      accept="image/*"
+                    />
                   </div>
+                  <div>
+                    <Label htmlFor="driversLicenseBack">Driver's License (Back)</Label>
+                    <Input
+                      id="driversLicenseBack"
+                      type="file"
+                      onChange={handleFileChange}
+                      accept="image/*"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="creditScore">Credit Score Range</Label>
+                  <Select value={formData.creditScore} onValueChange={(value) => handleInputChange("creditScore", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select credit range" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="poor">Poor (300-579)</SelectItem>
+                      <SelectItem value="fair">Fair (580-669)</SelectItem>
+                      <SelectItem value="good">Good (670-739)</SelectItem>
+                      <SelectItem value="very-good">Very Good (740-799)</SelectItem>
+                      <SelectItem value="excellent">Excellent (800+)</SelectItem>
+                      <SelectItem value="unknown">Don't Know</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {formData.loanType === "business" && (
