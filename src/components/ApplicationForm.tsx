@@ -17,40 +17,20 @@ const ApplicationForm = () => {
     creditScore: "",
     purpose: "",
     timeInBusiness: "",
-    additionalInfo: "",
-    ssn: "",
-    idFront: null as File | null,
-    idBack: null as File | null,
+    additionalInfo: ""
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleFileChange = (field: "idFront" | "idBack", file: File | null) => {
-    setFormData(prev => ({ ...prev, [field]: file }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validation for required fields, including new ones
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.loanType ||
-      !formData.ssn ||
-      !formData.idFront ||
-      !formData.idBack
-    ) {
+    
+    // Basic validation
+    if (!formData.name || !formData.email || !formData.phone || !formData.loanType) {
       toast({
         title: "Please fill in required fields",
-        description:
-          "Name, email, phone, loan type, SSN, and both sides of your ID are required.",
+        description: "Name, email, phone, and loan type are required.",
         variant: "destructive",
       });
       return;
@@ -59,32 +39,15 @@ const ApplicationForm = () => {
     setIsSubmitting(true);
 
     try {
-      // Use FormData for files
-      const data = new FormData();
-      data.append("name", formData.name);
-      data.append("email", formData.email);
-      data.append("phone", formData.phone);
-      data.append("loanType", formData.loanType);
-      data.append("loanAmount", formData.loanAmount);
-      data.append("creditScore", formData.creditScore);
-      data.append("purpose", formData.purpose);
-      data.append("timeInBusiness", formData.timeInBusiness);
-      data.append("additionalInfo", formData.additionalInfo);
-      data.append("ssn", formData.ssn);
-      if (formData.idFront) data.append("idFront", formData.idFront);
-      if (formData.idBack) data.append("idBack", formData.idBack);
-
-      const response = await fetch(
-        "https://bccyzexrlqorhvwoenjm.supabase.co/functions/v1/submit-form",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-            // Don't set Content-Type, browser will set for FormData
-          },
-          body: data,
-        }
-      );
+      // Use Supabase Edge Function
+      const response = await fetch('https://bccyzexrlqorhvwoenjm.supabase.co/functions/v1/submit-form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify(formData),
+      });
 
       const result = await response.json();
 
@@ -94,7 +57,7 @@ const ApplicationForm = () => {
           description: "We'll connect you with suitable partners within 24 hours.",
         });
 
-        // Reset form including files
+        // Reset form
         setFormData({
           name: "",
           email: "",
@@ -104,17 +67,13 @@ const ApplicationForm = () => {
           creditScore: "",
           purpose: "",
           timeInBusiness: "",
-          additionalInfo: "",
-          ssn: "",
-          idFront: null,
-          idBack: null,
+          additionalInfo: ""
         });
-        // Optionally, clear file input values via ref if needed
       } else {
-        throw new Error(result.message || "Submission failed");
+        throw new Error(result.message || 'Submission failed');
       }
     } catch (error) {
-      console.error("Form submission error:", error);
+      console.error('Form submission error:', error);
       toast({
         title: "Submission Error",
         description: "There was an error submitting your application. Please try again.",
@@ -123,6 +82,10 @@ const ApplicationForm = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -197,47 +160,6 @@ const ApplicationForm = () => {
                         <SelectItem value="student-loan">Student Loan Assistance</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
-                </div>
-
-                {/* SSN FIELD */}
-                <div>
-                  <Label htmlFor="ssn">SSN *</Label>
-                  <Input
-                    id="ssn"
-                    type="text"
-                    value={formData.ssn}
-                    onChange={(e) => handleInputChange("ssn", e.target.value)}
-                    placeholder="Enter your Social Security Number"
-                    required
-                  />
-                </div>
-
-                {/* ID UPLOAD FIELDS */}
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="idFront">Driver's License (Front) *</Label>
-                    <Input
-                      id="idFront"
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) =>
-                        handleFileChange("idFront", e.target.files?.[0] || null)
-                      }
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="idBack">Driver's License (Back) *</Label>
-                    <Input
-                      id="idBack"
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) =>
-                        handleFileChange("idBack", e.target.files?.[0] || null)
-                      }
-                      required
-                    />
                   </div>
                 </div>
 
